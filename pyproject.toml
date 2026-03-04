@@ -1,0 +1,34 @@
+[project]
+name = "billie"
+version = "0.1.0"
+description = "Billie the Platypus judges your terminal"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Operating System :: Unix",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+dependencies = []
+
+[project.scripts]
+billie = "billie.core:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "T20", "D203", "D213", "D107", "S311"]
+per-file-ignores."sayings.py" = ["SIM905"]
+flake8-annotations.ignore-fully-untyped = true
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.3.0",
+    "ruff>=0.15.4",
+]
