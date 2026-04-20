@@ -15,7 +15,7 @@ import unicodedata
 from importlib.resources import files
 from pathlib import Path
 
-from billie import kitty, sayings
+from billie import kitty, sayings, seasons
 
 ROOT = files("billie").joinpath("static")
 DEFAULT_BILLIE = "billie.txt"
@@ -40,8 +40,34 @@ class Billie:
         self.image_rows = 0
         self.actual_width = 0
 
+    def setup_seasonal(self):
+        """Load seasonal theme based on date or --season flag."""
+        season_name = self.ns.season
+
+        if season_name == "none":
+            return
+
+        if season_name == "auto":
+            season_name = seasons.get_current_season()
+
+        if season_name is None:
+            return
+
+        season = seasons.SEASONS.get(season_name)
+        if season is None:
+            return
+
+        pic = season.get("pic", DEFAULT_BILLIE)
+        art_path = ROOT.joinpath(pic)
+        if art_path.is_file():
+            self.billie_path = art_path
+
+        self.words.extend(season["words"])
+
     def setup(self):
         """Load Billie, gather words, decorate terminal."""
+        self.setup_seasonal()
+
         # Kitty graphics protocol: render high-res PNG instead of ANSI art
         if not self.ns.no_billie and kitty.is_kitty_capable() and self.tty.out_is_tty:
             png_path = ROOT.joinpath(self.billie_path.name.replace(".txt", ".png"))
@@ -312,6 +338,24 @@ def setup_arguments():
         help="word density percent (0-100, default 30)",
         type=float,
         default=30,
+    )
+
+    season_choices = [
+        "valentine",
+        "easter",
+        "earth",
+        "halloween",
+        "reinvent",
+        "xmas",
+        "billing",
+        "none",
+    ]
+    parser.add_argument(
+        "-s",
+        "--season",
+        help="seasonal theme (default: auto-detect by date)",
+        choices=season_choices,
+        default="auto",
     )
     return parser
 

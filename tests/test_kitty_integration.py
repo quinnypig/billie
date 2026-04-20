@@ -7,7 +7,7 @@ from unittest.mock import patch
 from billie.core import Billie, TTYHandler
 
 
-def _make_billie(*, no_billie=False, width=120, height=50):
+def _make_billie(*, no_billie=False, width=120, height=50, season="none"):
     """Create a Billie instance with controllable TTY settings."""
     tty = TTYHandler()
     tty.width = width
@@ -19,6 +19,7 @@ def _make_billie(*, no_billie=False, width=120, height=50):
         max_height=None,
         max_width=None,
         density=30,
+        season=season,
     )
     return Billie(tty, ns)
 
