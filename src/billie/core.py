@@ -15,7 +15,7 @@ import unicodedata
 from importlib.resources import files
 from pathlib import Path
 
-from billie import sayings
+from billie import kitty, sayings
 
 ROOT = files("billie").joinpath("static")
 DEFAULT_BILLIE = "billie.txt"
@@ -26,6 +26,7 @@ class Billie:
 
     MAX_PERCENT = 100
     MIN_PS_LEN = 2
+    MIN_TEXT_WIDTH = 15
 
     def __init__(self, tty, ns):
         self.tty = tty
@@ -33,10 +34,36 @@ class Billie:
         self.lines = []
         self.billie_path = ROOT.joinpath(DEFAULT_BILLIE)
         self.words = sayings.BillieDeque(*sayings.WORD_LIST)
+        self.kitty_mode = False
+        self.image_data = None
+        self.image_cols = 0
+        self.image_rows = 0
+        self.actual_width = 0
 
     def setup(self):
         """Load Billie, gather words, decorate terminal."""
-        if self.tty.pretty:
+        # Kitty graphics protocol: render high-res PNG instead of ANSI art
+        if not self.ns.no_billie and kitty.is_kitty_capable() and self.tty.out_is_tty:
+            png_path = ROOT.joinpath(self.billie_path.name.replace(".txt", ".png"))
+            if png_path.is_file():
+                self.image_data = png_path.read_bytes()
+                img_w, img_h = kitty.parse_png_dimensions(self.image_data)
+                self.image_cols, self.image_rows = kitty.calculate_cell_size(
+                    img_w, img_h, self.tty.height
+                )
+                self.actual_width = self.tty.width
+                self.tty.width -= self.image_cols
+                if self.tty.width >= self.MIN_TEXT_WIDTH:
+                    self.kitty_mode = True
+                else:
+                    # Image too wide for terminal, fall back to ANSI
+                    self.tty.width = self.actual_width
+                    self.image_data = None
+
+        if self.kitty_mode:
+            billie = []
+            max_billie = self.MIN_TEXT_WIDTH
+        elif self.tty.pretty:
             billie = self.load_billie()
             max_billie = max(map(clean_len, billie)) + 15
         else:
@@ -172,6 +199,15 @@ class Billie:
         """Unleash Billie upon the terminal."""
         for line in self.lines:
             sys.stdout.write(line)
+
+        if self.kitty_mode:
+            total_lines = len(self.lines)
+            img_row = total_lines - self.image_rows + 1
+            img_col = self.actual_width - self.image_cols + 1
+            sys.stdout.write(f"\033[{img_row};{img_col}H")
+            kitty.send_image(self.image_data, self.image_cols, self.image_rows)
+            sys.stdout.write(f"\033[{total_lines};1H")
+
         sys.stdout.flush()
 
 
