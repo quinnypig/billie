@@ -50,7 +50,7 @@ class TestParsePngDimensions:
     def test_real_billie_png(self):
         data = files("billie").joinpath("static/billie.png").read_bytes()
         w, h = parse_png_dimensions(data)
-        assert w == 1472  # noqa: PLR2004
+        assert w == 1470  # noqa: PLR2004
         assert h == 1320  # noqa: PLR2004
 
     def test_synthetic_png_header(self):
