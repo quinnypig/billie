@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 import pytest
 
+from billie import seasons
 from billie.core import Billie, TTYHandler, setup_arguments
 
 
@@ -57,11 +58,11 @@ class TestSetupSeasonal:
         assert b.billie_path == original_path
         assert list(b.words) == original_words
 
-    def test_explicit_season_extends_words(self):
+    def test_explicit_season_replaces_words(self):
         b = _make_billie(season="halloween")
-        original_len = len(b.words)
         b.setup_seasonal()
-        assert len(b.words) > original_len
+        # Words should be purely seasonal, not mixed with defaults
+        assert all(w in seasons.SEASONS["halloween"]["words"] for w in b.words)
         assert any("haunted" in w for w in b.words)
 
     def test_explicit_season_sets_art_path(self):

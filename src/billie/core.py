@@ -62,7 +62,7 @@ class Billie:
         if art_path.is_file():
             self.billie_path = art_path
 
-        self.words.extend(season["words"])
+        self.words = sayings.BillieDeque(*season["words"])
 
     def setup(self):
         """Load Billie, gather words, decorate terminal."""
