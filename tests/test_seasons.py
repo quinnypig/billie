@@ -22,17 +22,24 @@ class TestSeasonData:
     def test_billing_has_days_not_dates(self):
         assert "days" in SEASONS["billing"]
 
-    def test_seven_seasons_defined(self):
-        assert len(SEASONS) == 7  # noqa: PLR2004
+    def test_all_seasons_defined(self):
+        assert len(SEASONS) == 14  # noqa: PLR2004
 
     def test_season_names(self):
         expected = {
             "valentine",
+            "leap_day",
+            "pi_day",
+            "dst",
+            "april_fools",
+            "tax_day",
             "easter",
             "earth",
+            "heat_wave",
             "halloween",
             "reinvent",
             "xmas",
+            "friday13",
             "billing",
         }
         assert set(SEASONS.keys()) == expected
@@ -124,3 +131,63 @@ class TestGetCurrentSeason:
     def test_defaults_to_today(self):
         result = get_current_season()
         assert result is None or isinstance(result, str)
+
+    def test_pi_day_detected(self):
+        assert get_current_season(date(2026, 3, 14)) == "pi_day"
+
+    def test_pi_day_only_one_day(self):
+        assert get_current_season(date(2026, 3, 13)) != "pi_day"
+        assert get_current_season(date(2026, 3, 15)) != "pi_day"
+
+    def test_april_fools_detected(self):
+        assert get_current_season(date(2026, 4, 1)) == "april_fools"
+
+    def test_tax_day_detected(self):
+        assert get_current_season(date(2026, 4, 15)) == "tax_day"
+
+    def test_tax_day_start(self):
+        assert get_current_season(date(2026, 4, 10)) == "tax_day"
+
+    def test_tax_day_before_earth(self):
+        # 4/15 is tax_day, 4/16 is earth — verify the boundary
+        assert get_current_season(date(2026, 4, 16)) == "earth"
+
+    def test_leap_day_detected(self):
+        assert get_current_season(date(2024, 2, 29)) == "leap_day"
+
+    def test_heat_wave_detected(self):
+        assert get_current_season(date(2026, 7, 25)) == "heat_wave"
+
+    def test_heat_wave_range(self):
+        assert get_current_season(date(2026, 7, 20)) == "heat_wave"
+        assert get_current_season(date(2026, 8, 10)) == "heat_wave"
+        assert get_current_season(date(2026, 7, 19)) != "heat_wave"
+        assert get_current_season(date(2026, 8, 11)) != "heat_wave"
+
+    def test_friday13_detected(self):
+        # Nov 13, 2026 is a Friday
+        assert get_current_season(date(2026, 11, 13)) == "friday13"
+
+    def test_friday13_requires_friday(self):
+        # Dec 13, 2026 is a Sunday — but also mid-reinvent/xmas gap
+        assert get_current_season(date(2026, 12, 13)) != "friday13"
+
+    def test_valentine_beats_friday13(self):
+        # Feb 13, 2026 is a Friday but also in valentine range
+        assert get_current_season(date(2026, 2, 13)) == "valentine"
+
+    def test_dst_spring_forward(self):
+        # Second Sunday of March 2026 is March 8
+        assert get_current_season(date(2026, 3, 8)) == "dst"
+
+    def test_dst_fall_back(self):
+        # First Sunday of November 2026 is Nov 1
+        assert get_current_season(date(2026, 11, 1)) == "dst"
+
+    def test_dst_monday_after(self):
+        # Day after fall-back transition
+        assert get_current_season(date(2026, 11, 2)) == "dst"
+
+    def test_reinvent_extended_to_thanksgiving(self):
+        # Reinvent now starts Nov 23 to cover Thanksgiving week
+        assert get_current_season(date(2026, 11, 23)) == "reinvent"

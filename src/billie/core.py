@@ -342,11 +342,18 @@ def setup_arguments():
 
     season_choices = [
         "valentine",
+        "leap_day",
+        "pi_day",
+        "dst",
+        "april_fools",
+        "tax_day",
         "easter",
         "earth",
+        "heat_wave",
         "halloween",
         "reinvent",
         "xmas",
+        "friday13",
         "billing",
         "none",
     ]
