@@ -39,7 +39,7 @@ cat your-awful-code.py | billie
 
 ## Who is Billie?
 
-Billie is Corey Quinn's long-suffering platypus executive assistant. She manages his calendar, triages his inbox, and has strong feelings about your AWS bill. She is tired. She has seen things. The answer is still no.
+Billie is Corey Quinn's long-suffering platypus executive assistant. He manages his calendar, triages his inbox, and has strong feelings about your AWS bill. He is tired. He has seen things. The answer is still no.
 
 ## License
 
