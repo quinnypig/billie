@@ -102,7 +102,11 @@ billie -s <season>      # eyeball it
 ## Notes
 
 - First calendar match in `SEASONS` order wins; `billing` (day-of-month) is
-  checked last. Keep new calendar seasons above `billing`.
+  checked last. List a precise single-day holiday **above** any wider or movable
+  season it can overlap — in particular above the dynamic Easter window, which
+  drifts across late March and early April — so the specific day beats the broad
+  one. (This is why `backup` on Mar 31 and `aprilfools` on Apr 1 sit before
+  `easter`.)
 - Kitty rendering derives the PNG name from the `.txt` name, so the two files
   must share a stem (`billie-<season>`).
 - Half-block art is twice as tall in pixels as it is in character rows, so a

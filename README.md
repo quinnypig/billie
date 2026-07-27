@@ -44,10 +44,13 @@ Billie is Corey Quinn's long-suffering platypus executive assistant. He manages 
 ## Seasons
 
 Billie dresses for the occasion. By default he auto-detects the date and picks a
-seasonal look and a themed set of judgments — Valentine's, Easter, Earth Day,
-Halloween, re:Invent, the holidays, the first few days of the month (billing
-season), and one very specific birthday. Force one with `--season`, or
-`--season none` to opt out.
+seasonal look and a themed set of judgments. There are twenty of them: the
+expected — Valentine's, Easter, Earth Day, Halloween, re:Invent, the holidays,
+the first few days of the month (billing season), one very specific birthday —
+and an increasingly unhinged pile of the unexpected: New Year's, Groundhog Day,
+Pizza Day, Pi Day, World Backup Day, April Fools', Star Wars Day, Towel Day,
+Cheese Day, Programmers' Day, Talk Like a Pirate Day, and International Coffee
+Day. Force one with `--season`, or `--season none` to opt out.
 
 Adding a new season — art and all — is documented in
 [docs/seasonal-art.md](docs/seasonal-art.md).

@@ -22,8 +22,8 @@ class TestSeasonData:
     def test_billing_has_days_not_dates(self):
         assert "days" in SEASONS["billing"]
 
-    def test_eight_seasons_defined(self):
-        assert len(SEASONS) == 8  # noqa: PLR2004
+    def test_twenty_seasons_defined(self):
+        assert len(SEASONS) == 20  # noqa: PLR2004
 
     def test_season_names(self):
         expected = {
@@ -34,6 +34,18 @@ class TestSeasonData:
             "reinvent",
             "xmas",
             "birthday",
+            "newyear",
+            "groundhog",
+            "pizza",
+            "piday",
+            "backup",
+            "aprilfools",
+            "starwars",
+            "towel",
+            "cheese",
+            "programmers",
+            "pirate",
+            "coffee",
             "billing",
         }
         assert set(SEASONS.keys()) == expected
@@ -91,7 +103,8 @@ class TestGetCurrentSeason:
         assert get_current_season(date(2026, 6, 3)) == "billing"
 
     def test_billing_fourth_not_billing(self):
-        assert get_current_season(date(2026, 6, 4)) is None
+        # Aug 4 is a plain day-of-month 4 with no calendar season on it.
+        assert get_current_season(date(2026, 8, 4)) is None
 
     def test_calendar_season_beats_billing(self):
         # Dec 1 is both billing and reinvent — reinvent wins
@@ -127,6 +140,27 @@ class TestGetCurrentSeason:
 
     def test_birthday_day_after(self):
         assert get_current_season(date(2026, 7, 29)) != "birthday"
+
+    def test_bullshit_holidays_detected(self):
+        cases = {
+            (2, 9): "pizza",
+            (3, 14): "piday",
+            (3, 31): "backup",
+            (5, 4): "starwars",
+            (5, 25): "towel",
+            (6, 4): "cheese",
+            (9, 13): "programmers",
+            (9, 19): "pirate",
+        }
+        for (month, day), name in cases.items():
+            assert get_current_season(date(2026, month, day)) == name, name
+
+    def test_holiday_beats_billing_on_shared_day(self):
+        # These land on days 1-3 (billing days); the calendar holiday must win.
+        assert get_current_season(date(2026, 1, 1)) == "newyear"
+        assert get_current_season(date(2026, 2, 2)) == "groundhog"
+        assert get_current_season(date(2026, 4, 1)) == "aprilfools"
+        assert get_current_season(date(2026, 10, 1)) == "coffee"
 
     def test_no_season_regular_day(self):
         assert get_current_season(date(2026, 7, 15)) is None
