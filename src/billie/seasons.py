@@ -49,7 +49,9 @@ SEASONS: dict[str, dict] = {
         ),
     },
     "groundhog": {
-        "dates": ((2, 2), (2, 2)),
+        # It's Groundhog Day. Again. Every day from the 2nd through the 8th —
+        # the same judgment on a loop for a week, because of course it is.
+        "dates": ((2, 2), (2, 8)),
         "pic": "billie-groundhog.txt",
         "words": (
             "six more weeks of this outage",

@@ -155,6 +155,13 @@ class TestGetCurrentSeason:
         for (month, day), name in cases.items():
             assert get_current_season(date(2026, month, day)) == name, name
 
+    def test_groundhog_repeats_all_week(self):
+        # It's Groundhog Day. Again. Feb 2 through Feb 8, then Pizza Day breaks
+        # the loop on the 9th.
+        for day in range(2, 9):
+            assert get_current_season(date(2026, 2, day)) == "groundhog", day
+        assert get_current_season(date(2026, 2, 9)) == "pizza"
+
     def test_holiday_beats_billing_on_shared_day(self):
         # These land on days 1-3 (billing days); the calendar holiday must win.
         assert get_current_season(date(2026, 1, 1)) == "newyear"
