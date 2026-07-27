@@ -108,6 +108,22 @@ SEASONS: dict[str, dict] = {
             "ho ho holy outage",
         ),
     },
+    "birthday": {
+        "dates": ((7, 28), (7, 28)),
+        "pic": "billie-birthday.txt",
+        "words": (
+            "another year closer to your reserved instances expiring",
+            "happy birthday, the bill is still your problem",
+            "blow out the candles, on-call is still lit",
+            "you depreciate faster than a reserved instance",
+            "make a wish (it will not fix us-east-1)",
+            "one year older, same untagged resources",
+            "the candles cost more than a t2.micro",
+            "surprise party, surprise egress charges",
+            "your gift is another service you didn't ask for",
+            "congratulations on surviving another billing cycle",
+        ),
+    },
     "billing": {
         "days": (1, 2, 3),
         "pic": "billie-billing.txt",

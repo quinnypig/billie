@@ -22,8 +22,8 @@ class TestSeasonData:
     def test_billing_has_days_not_dates(self):
         assert "days" in SEASONS["billing"]
 
-    def test_seven_seasons_defined(self):
-        assert len(SEASONS) == 7  # noqa: PLR2004
+    def test_eight_seasons_defined(self):
+        assert len(SEASONS) == 8  # noqa: PLR2004
 
     def test_season_names(self):
         expected = {
@@ -33,6 +33,7 @@ class TestSeasonData:
             "halloween",
             "reinvent",
             "xmas",
+            "birthday",
             "billing",
         }
         assert set(SEASONS.keys()) == expected
@@ -117,6 +118,15 @@ class TestGetCurrentSeason:
     def test_easter_too_late(self):
         # Easter 2026 is April 5; 2 days after is April 7
         assert get_current_season(date(2026, 4, 7)) != "easter"
+
+    def test_birthday_detected(self):
+        assert get_current_season(date(2026, 7, 28)) == "birthday"
+
+    def test_birthday_day_before(self):
+        assert get_current_season(date(2026, 7, 27)) != "birthday"
+
+    def test_birthday_day_after(self):
+        assert get_current_season(date(2026, 7, 29)) != "birthday"
 
     def test_no_season_regular_day(self):
         assert get_current_season(date(2026, 7, 15)) is None

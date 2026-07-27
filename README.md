@@ -41,6 +41,17 @@ cat your-awful-code.py | billie
 
 Billie is Corey Quinn's long-suffering platypus executive assistant. He manages his calendar, triages his inbox, and has strong feelings about your AWS bill. He is tired. He has seen things. The answer is still no.
 
+## Seasons
+
+Billie dresses for the occasion. By default he auto-detects the date and picks a
+seasonal look and a themed set of judgments — Valentine's, Easter, Earth Day,
+Halloween, re:Invent, the holidays, the first few days of the month (billing
+season), and one very specific birthday. Force one with `--season`, or
+`--season none` to opt out.
+
+Adding a new season — art and all — is documented in
+[docs/seasonal-art.md](docs/seasonal-art.md).
+
 ## License
 
 MIT

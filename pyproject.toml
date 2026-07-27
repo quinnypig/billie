@@ -29,6 +29,16 @@ select = ["ALL"]
 ignore = ["COM812", "T20", "D203", "D213", "D107", "S311"]
 per-file-ignores."sayings.py" = ["SIM905"]
 per-file-ignores."tests/**" = ["S101", "D100", "D101", "D102", "D103", "D104"]
+# Standalone asset-generation utilities (not shipped in the package).
+per-file-ignores."tools/**" = [
+    "C416",
+    "C901",
+    "D103",
+    "D401",
+    "EXE001",
+    "PLR2004",
+    "PTH123",
+]
 flake8-annotations.ignore-fully-untyped = true
 
 [dependency-groups]

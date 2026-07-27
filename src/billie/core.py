@@ -347,6 +347,7 @@ def setup_arguments():
         "halloween",
         "reinvent",
         "xmas",
+        "birthday",
         "billing",
         "none",
     ]
