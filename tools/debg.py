@@ -9,7 +9,7 @@ and interior light details (a candle flame) are left untouched.
 
 The result is cropped to its content and, if a max-pixel cap is given, scaled
 so its longest side fits — keeping seasonal PNGs in family with their siblings
-(~1500px) so the Kitty graphics transmission stays lean.
+(~1000px) so the Kitty graphics transmission stays lean.
 
 Usage: uv run --with pillow python debg.py in.png out.png [max_px]
 """

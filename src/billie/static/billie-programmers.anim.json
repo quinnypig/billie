@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-programmers-anim1.png",
+      "x": 380,
+      "y": 188,
+      "gap": 60
+    },
+    {
+      "file": "billie-programmers-anim2.png",
+      "x": 380,
+      "y": 188,
+      "gap": 130
+    },
+    {
+      "file": "billie-programmers-anim3.png",
+      "x": 380,
+      "y": 188,
+      "gap": 60
+    }
+  ]
+}

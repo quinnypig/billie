@@ -52,6 +52,13 @@ Pizza Day, Pi Day, World Backup Day, April Fools', Star Wars Day, Towel Day,
 Cheese Day, Programmers' Day, Talk Like a Pirate Day, and International Coffee
 Day. Force one with `--season`, or `--season none` to opt out.
 
+In Kitty or Ghostty 1.4+, Billie is animated, and keeps going after billie
+exits because the terminal runs the animation itself. Mostly he blinks at you,
+slowly, after a long stare. Some costumes get more: the birthday candle
+flickers, the coffee and the pie steam, the lightsaber hums, the
+jack-o'-lantern lights up, the New Year's top hat glitters, and the valentine
+hearts beat. The groundhog blinks too, right after Billie does.
+
 Adding a new season — art and all — is documented in
 [docs/seasonal-art.md](docs/seasonal-art.md).
 

@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-aprilfools-anim1.png",
+      "x": 313,
+      "y": 275,
+      "gap": 60
+    },
+    {
+      "file": "billie-aprilfools-anim2.png",
+      "x": 313,
+      "y": 275,
+      "gap": 130
+    },
+    {
+      "file": "billie-aprilfools-anim3.png",
+      "x": 313,
+      "y": 275,
+      "gap": 60
+    }
+  ]
+}

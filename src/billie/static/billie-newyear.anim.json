@@ -1,0 +1,35 @@
+{
+  "root_gap": 150,
+  "frames": [
+    {
+      "file": "billie-newyear-anim1.png",
+      "x": 312,
+      "y": 58,
+      "gap": 150
+    },
+    {
+      "file": "billie-newyear-anim2.png",
+      "x": 352,
+      "y": 89,
+      "gap": 150
+    },
+    {
+      "file": "billie-newyear-anim3.png",
+      "x": 361,
+      "y": 20,
+      "gap": 150
+    },
+    {
+      "file": "billie-newyear-anim4.png",
+      "x": 200,
+      "y": 88,
+      "gap": 150
+    },
+    {
+      "file": "billie-newyear-anim5.png",
+      "x": 245,
+      "y": 92,
+      "gap": 150
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "root_gap": 50,
+  "frames": [
+    {
+      "file": "billie-halloween-anim1.png",
+      "x": 414,
+      "y": 508,
+      "gap": 120
+    },
+    {
+      "file": "billie-halloween-anim2.png",
+      "x": 414,
+      "y": 508,
+      "gap": 90
+    },
+    {
+      "file": "billie-halloween-anim3.png",
+      "x": 414,
+      "y": 508,
+      "gap": 140
+    },
+    {
+      "file": "billie-halloween-anim4.png",
+      "x": 414,
+      "y": 508,
+      "gap": 80
+    },
+    {
+      "file": "billie-halloween-anim5.png",
+      "x": 414,
+      "y": 508,
+      "gap": 110
+    }
+  ]
+}

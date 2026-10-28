@@ -1,0 +1,35 @@
+{
+  "root_gap": 150,
+  "frames": [
+    {
+      "file": "billie-piday-anim1.png",
+      "x": 560,
+      "y": 231,
+      "gap": 150
+    },
+    {
+      "file": "billie-piday-anim2.png",
+      "x": 560,
+      "y": 231,
+      "gap": 150
+    },
+    {
+      "file": "billie-piday-anim3.png",
+      "x": 560,
+      "y": 232,
+      "gap": 150
+    },
+    {
+      "file": "billie-piday-anim4.png",
+      "x": 560,
+      "y": 231,
+      "gap": 150
+    },
+    {
+      "file": "billie-piday-anim5.png",
+      "x": 560,
+      "y": 231,
+      "gap": 150
+    }
+  ]
+}

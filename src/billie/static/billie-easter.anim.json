@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-easter-anim1.png",
+      "x": 373,
+      "y": 240,
+      "gap": 60
+    },
+    {
+      "file": "billie-easter-anim2.png",
+      "x": 373,
+      "y": 240,
+      "gap": 130
+    },
+    {
+      "file": "billie-easter-anim3.png",
+      "x": 373,
+      "y": 240,
+      "gap": 60
+    }
+  ]
+}

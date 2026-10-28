@@ -1,0 +1,104 @@
+# One entry per animated Billie, keyed by PNG stem. Boxes are [x, y, w, h] in
+# the shipped PNG's pixels. After changing art or an entry, regenerate with:
+#
+#   uv run --with pillow python tools/animate.py build [stem ...]
+#
+# Effects (see tools/animate.py):
+#   blink    eyes = dot eyes, or set open = true for white eyeballs. Optional
+#            eyes_later blink in turn after a second stare.
+#   flicker  box = a candle flame (orange outline, lighter core, dark wick).
+#   steam    box = light wisps over darker art. Keep the cup or pie out of it.
+#   glow     box + kind = "saber" (blue blade) or "candle" (dark cutouts that
+#            light up, e.g. a jack-o'-lantern face).
+#   twinkle  box = a dark glittery area that sparkles.
+#   pulse    boxes = shapes on transparent background that beat like hearts.
+
+[billie]
+effect = "blink"
+eyes = [[345, 154, 34, 34], [508, 99, 34, 34]]
+
+[billie-aprilfools]
+effect = "blink"
+eyes = [[310, 321, 32, 32], [458, 271, 32, 32]]
+
+[billie-backup]
+effect = "blink"
+eyes = [[366, 223, 33, 33], [522, 171, 33, 33]]
+
+[billie-billing]
+effect = "blink"
+open = true
+eyes = [[312, 114, 88, 96], [492, 60, 96, 98]]
+
+[billie-birthday]
+effect = "flicker"
+box = [428, 450, 70, 74]
+
+[billie-cheese]
+effect = "blink"
+eyes = [[350, 199, 34, 33], [511, 146, 33, 33]]
+
+[billie-coffee]
+effect = "steam"
+box = [540, 290, 120, 105]
+
+[billie-earth]
+effect = "blink"
+eyes = [[378, 162, 29, 29], [505, 120, 29, 29]]
+
+[billie-easter]
+effect = "blink"
+eyes = [[370, 278, 28, 29], [498, 236, 29, 29]]
+
+[billie-groundhog]
+effect = "blink"
+eyes = [[345, 240, 34, 34], [501, 187, 33, 34]]
+eyes_later = [[494, 432, 28, 33], [552, 420, 27, 31]]
+
+[billie-halloween]
+effect = "glow"
+kind = "candle"
+box = [398, 503, 135, 103]
+
+[billie-newyear]
+effect = "twinkle"
+box = [200, 20, 240, 160]
+
+[billie-piday]
+effect = "steam"
+box = [560, 200, 130, 205]
+
+[billie-pirate]
+effect = "blink"
+eyes = [[505, 210, 33, 33]]
+eyes_later = [[674, 217, 27, 27]]
+
+[billie-pizza]
+effect = "blink"
+eyes = [[345, 213, 35, 35], [508, 159, 35, 34]]
+
+[billie-programmers]
+effect = "blink"
+eyes = [[376, 241, 33, 34], [529, 184, 35, 34]]
+
+[billie-reinvent]
+effect = "blink"
+open = true
+eyes = [[324, 130, 66, 58], [484, 92, 82, 38]]
+
+[billie-starwars]
+effect = "glow"
+kind = "saber"
+box = [630, 0, 200, 490]
+
+[billie-towel]
+effect = "blink"
+eyes = [[511, 183, 33, 32], [357, 233, 33, 33]]
+
+[billie-valentine]
+effect = "pulse"
+boxes = [[62, 12, 182, 176], [236, 0, 72, 76], [44, 170, 68, 66]]
+
+[billie-xmas]
+effect = "blink"
+eyes = [[339, 269, 34, 33], [499, 216, 34, 33]]

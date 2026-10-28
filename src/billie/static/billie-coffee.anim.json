@@ -1,0 +1,35 @@
+{
+  "root_gap": 150,
+  "frames": [
+    {
+      "file": "billie-coffee-anim1.png",
+      "x": 540,
+      "y": 317,
+      "gap": 150
+    },
+    {
+      "file": "billie-coffee-anim2.png",
+      "x": 540,
+      "y": 316,
+      "gap": 150
+    },
+    {
+      "file": "billie-coffee-anim3.png",
+      "x": 540,
+      "y": 317,
+      "gap": 150
+    },
+    {
+      "file": "billie-coffee-anim4.png",
+      "x": 540,
+      "y": 316,
+      "gap": 150
+    },
+    {
+      "file": "billie-coffee-anim5.png",
+      "x": 540,
+      "y": 316,
+      "gap": 150
+    }
+  ]
+}

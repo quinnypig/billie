@@ -3,41 +3,62 @@
 import base64
 import struct
 from importlib.resources import files
+from io import StringIO
 from unittest.mock import patch
 
+import pytest
+
+from billie import kitty
 from billie.kitty import (
     CELL_ASPECT_RATIO,
     CHUNK_SIZE,
     SUPPORTED_TERMINALS,
     calculate_cell_size,
+    cell_aspect_ratio,
+    encode_animation_start,
+    encode_frame_chunks,
     encode_image_chunks,
     is_kitty_capable,
     parse_png_dimensions,
+    send_animation,
     send_image,
+    supports_animation,
+    terminal_program,
 )
 
 
 class TestIsKittyCapable:
     """Verify terminal capability detection."""
 
-    @patch.dict("os.environ", {"TERM_PROGRAM": "ghostty"})
+    @patch.dict("os.environ", {"TERM_PROGRAM": "ghostty"}, clear=True)
     def test_ghostty_supported(self):
         assert is_kitty_capable() is True
 
-    @patch.dict("os.environ", {"TERM_PROGRAM": "kitty"})
+    @patch.dict("os.environ", {"TERM_PROGRAM": "kitty"}, clear=True)
     def test_kitty_supported(self):
         assert is_kitty_capable() is True
 
-    @patch.dict("os.environ", {"TERM_PROGRAM": "WezTerm"})
+    @patch.dict("os.environ", {"TERM_PROGRAM": "WezTerm"}, clear=True)
     def test_wezterm_supported(self):
         assert is_kitty_capable() is True
 
-    @patch.dict("os.environ", {"TERM_PROGRAM": "xterm"})
+    @patch.dict("os.environ", {"TERM_PROGRAM": "xterm"}, clear=True)
     def test_xterm_not_supported(self):
         assert is_kitty_capable() is False
 
     @patch.dict("os.environ", {}, clear=True)
     def test_unset_not_supported(self):
+        assert is_kitty_capable() is False
+
+    @patch.dict("os.environ", {"TERM": "xterm-kitty"}, clear=True)
+    def test_kitty_detected_by_term(self):
+        # kitty never sets TERM_PROGRAM, only its terminfo name.
+        assert terminal_program() == "kitty"
+
+    @patch.dict(
+        "os.environ", {"TERM_PROGRAM": "tmux", "TERM": "tmux-256color"}, clear=True
+    )
+    def test_tmux_not_supported(self):
         assert is_kitty_capable() is False
 
     def test_supported_terminals_set(self):
@@ -50,8 +71,8 @@ class TestParsePngDimensions:
     def test_real_billie_png(self):
         data = files("billie").joinpath("static/billie.png").read_bytes()
         w, h = parse_png_dimensions(data)
-        assert w == 1470  # noqa: PLR2004
-        assert h == 1320  # noqa: PLR2004
+        assert w == 1000  # noqa: PLR2004
+        assert h == 898  # noqa: PLR2004
 
     def test_synthetic_png_header(self):
         signature = b"\x89PNG\r\n\x1a\n"
@@ -89,6 +110,80 @@ class TestCalculateCellSize:
         assert rows == expected_rows
         assert cols == expected_cols
 
+    def test_measured_cell_aspect(self):
+        cols, rows = calculate_cell_size(100, 100, 40, cell_aspect=2.5)
+        assert rows == int(40 * 0.55)
+        assert cols == int(rows * 2.5)
+
+
+class TestSupportsAnimation:
+    """Only terminals that play Kitty animations themselves get frames."""
+
+    @pytest.mark.parametrize(
+        ("version", "expected"),
+        [
+            ("1.4.0", True),
+            ("1.4.1", True),
+            ("1.10.0", True),
+            ("2.0.0", True),
+            ("1.4.0-main+abc123", True),
+            ("1.3.1", False),
+            ("", False),
+        ],
+    )
+    def test_ghostty_versions(self, version, expected):
+        env = {"TERM_PROGRAM": "ghostty", "TERM_PROGRAM_VERSION": version}
+        with patch.dict("os.environ", env, clear=True):
+            assert supports_animation() is expected
+
+    @patch.dict("os.environ", {"TERM": "xterm-kitty"}, clear=True)
+    def test_kitty_animates(self):
+        assert supports_animation() is True
+
+    @patch.dict(
+        "os.environ",
+        {"TERM_PROGRAM": "WezTerm", "TERM_PROGRAM_VERSION": "20240203"},
+        clear=True,
+    )
+    def test_wezterm_does_not(self):
+        assert supports_animation() is False
+
+    @patch.dict("os.environ", {}, clear=True)
+    def test_unknown_terminal_does_not(self):
+        assert supports_animation() is False
+
+
+class TestCellAspectRatio:
+    """Cell shape comes from TIOCGWINSZ pixel sizes when the terminal sets them."""
+
+    @staticmethod
+    def _winsize(rows, cols, xpixel, ypixel):
+        return struct.pack("HHHH", rows, cols, xpixel, ypixel)
+
+    def test_measured(self):
+        # 50 rows x 100 cols at 1000x1100 px: cells are 10x22, ratio 2.2.
+        packed = self._winsize(50, 100, 1000, 1100)
+        with patch("billie.kitty.fcntl.ioctl", return_value=packed):
+            assert cell_aspect_ratio(fd=1) == pytest.approx(2.2)
+
+    def test_zero_pixels_falls_back(self):
+        packed = self._winsize(50, 100, 0, 0)
+        with patch("billie.kitty.fcntl.ioctl", return_value=packed):
+            assert cell_aspect_ratio(fd=1) == CELL_ASPECT_RATIO
+
+    def test_absurd_ratio_falls_back(self):
+        packed = self._winsize(50, 100, 1000, 100)
+        with patch("billie.kitty.fcntl.ioctl", return_value=packed):
+            assert cell_aspect_ratio(fd=1) == CELL_ASPECT_RATIO
+
+    def test_not_a_tty_falls_back(self):
+        with patch("billie.kitty.fcntl.ioctl", side_effect=OSError):
+            assert cell_aspect_ratio(fd=1) == CELL_ASPECT_RATIO
+
+    def test_no_fcntl_falls_back(self):
+        with patch.object(kitty, "fcntl", None):
+            assert cell_aspect_ratio(fd=1) == CELL_ASPECT_RATIO
+
 
 class TestEncodeImageChunks:
     """Verify Kitty protocol escape sequence generation."""
@@ -102,6 +197,21 @@ class TestEncodeImageChunks:
         assert "a=T" in sequences[0]
         assert "c=10" in sequences[0]
         assert "r=5" in sequences[0]
+
+    def test_quiet_transient_and_cursor_stays(self):
+        first = encode_image_chunks(b"\x00" * 100, cols=10, rows=5)[0]
+        keys = first.split(";", 1)[0].removeprefix("\033_G").split(",")
+        assert "q=2" in keys
+        assert "N=1" in keys
+        assert "C=1" in keys
+
+    def test_no_image_number_by_default(self):
+        first = encode_image_chunks(b"\x00" * 100, cols=10, rows=5)[0]
+        assert "I=" not in first
+
+    def test_image_number(self):
+        first = encode_image_chunks(b"\x00" * 100, cols=10, rows=5, image_number=42)[0]
+        assert "I=42" in first
 
     def test_large_image_multiple_chunks(self):
         data = b"\x42" * 4096
@@ -167,3 +277,40 @@ class TestSendImage:
             send_image(data, cols=20, rows=10)
             written = [call.args[0] for call in mock_stdout.write.call_args_list]
         assert written == expected
+
+
+class TestAnimationEncoding:
+    """Frames are patches composed onto the root frame of a numbered image."""
+
+    def test_frame_keys(self):
+        first = encode_frame_chunks(b"\x00" * 100, 7, x=12, y=34, gap=90)[0]
+        keys = first.split(";", 1)[0].removeprefix("\033_G").split(",")
+        for key in ("a=f", "f=100", "q=2", "N=1", "I=7", "c=1", "X=1"):
+            assert key in keys
+        assert {"x=12", "y=34", "z=90"} <= set(keys)
+
+    def test_frame_continuation_chunks_are_bare(self):
+        sequences = encode_frame_chunks(b"\x42" * 8192, 7, x=0, y=0, gap=90)
+        assert len(sequences) > 1
+        for seq in sequences[1:]:
+            assert seq.startswith(("\033_Gm=0;", "\033_Gm=1;"))
+
+    def test_start_sets_root_gap_then_loops(self):
+        gap, start = encode_animation_start(7, root_gap=160)
+        assert "a=a" in gap
+        assert "I=7" in gap
+        assert "r=1" in gap
+        assert "z=160" in gap
+        assert "s=3" in start
+        assert "v=1" in start
+        assert "q=2" in gap
+        assert "q=2" in start
+
+    def test_send_animation_order(self):
+        frames = [(b"\x01" * 10, 1, 2, 80), (b"\x02" * 10, 3, 4, 90)]
+        out = StringIO()
+        with patch("billie.kitty.sys.stdout", out):
+            send_animation(7, frames, root_gap=160)
+        result = out.getvalue()
+        assert result.count("a=f,") == 2  # noqa: PLR2004
+        assert result.index("z=80") < result.index("z=90") < result.index("s=3")

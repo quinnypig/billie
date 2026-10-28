@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-pizza-anim1.png",
+      "x": 349,
+      "y": 163,
+      "gap": 60
+    },
+    {
+      "file": "billie-pizza-anim2.png",
+      "x": 349,
+      "y": 163,
+      "gap": 130
+    },
+    {
+      "file": "billie-pizza-anim3.png",
+      "x": 349,
+      "y": 163,
+      "gap": 60
+    }
+  ]
+}

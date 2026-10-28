@@ -20,7 +20,9 @@ Each season ships two files in `src/billie/static/`:
   brew tap quinnypig/imagemage && brew install imagemage
   export OPENAI_API_KEY="..."   # imagemage defaults to OpenAI gpt-image-2
   ```
-- [`uv`](https://docs.astral.sh/uv/) — runs the two Python helpers in `tools/`.
+- [`pngquant`](https://pngquant.org/) and [`oxipng`](https://github.com/shssoichiro/oxipng)
+  — `brew install pngquant oxipng`, to squeeze the PNG.
+- [`uv`](https://docs.astral.sh/uv/) — runs the Python helpers in `tools/`.
   Pillow is pulled in on the fly with `uv run --with pillow`; it is deliberately
   **not** a project dependency (the shipped package never touches it).
 
@@ -50,11 +52,21 @@ comes back with no real alpha. `tools/debg.py` flood-fills that light
 background inward from the border to true transparency — detached, colorful
 elements (confetti) and interior light details (a candle flame) survive because
 the fill only spreads across background-colored pixels. It then crops to content
-and caps the longest side (1500px keeps it in family with its siblings):
+and caps the longest side (1000px keeps it in family with its siblings):
 
 ```bash
 uv run --with pillow python tools/debg.py \
-  /tmp/billie-<season>.png src/billie/static/billie-<season>.png 1500
+  /tmp/billie-<season>.png src/billie/static/billie-<season>.png 1000
+```
+
+Then shrink it. The PNG is sent through the terminal on every run (over ssh too,
+now that `ghostty +ssh` forwards `TERM_PROGRAM`), and flat cartoon art survives
+a 256-color palette with no visible difference at about a fifth of the size:
+
+```bash
+pngquant --quality=80-98 --speed 1 --force --ext .png \
+  src/billie/static/billie-<season>.png
+oxipng -o 4 --strip safe src/billie/static/billie-<season>.png
 ```
 
 If Billie ends up with a light halo or, worse, see-through, nudge `SPREAD_MAX`
@@ -78,6 +90,43 @@ Sanity-check it in a real terminal:
 ```bash
 cat src/billie/static/billie-<season>.txt
 ```
+
+### 4. Animate it
+
+Every Billie is animated. Kitty and Ghostty 1.4+ play Kitty-protocol
+animations by themselves, so billie sends the extra frames, prints, and exits
+while the terminal keeps the loop going. Other terminals never get the frames
+and just show the still PNG. (A test fails if a Billie has no animation.)
+
+Frames ship as small patches (only the rectangle that changed) plus a
+`billie-<season>.anim.json` manifest, both generated next to the PNG from an
+entry in `tools/animations.toml`. Most Billies just blink: find the eyes in
+the final, shrunk PNG and list a box around each, with a few pixels of skin
+around it:
+
+```toml
+[billie-<season>]
+effect = "blink"
+eyes = [[x, y, w, h], [x, y, w, h]]
+```
+
+If the costume has something that ought to move, use a prop effect instead:
+`flicker` (candle flames), `steam` (wisps over a cup or pie), `glow` (a
+lightsaber, or a jack-o'-lantern lighting up), `twinkle` (glitter), or `pulse`
+(hearts). The comments at the top of `animations.toml` cover each one's keys.
+Keep it to one effect: terminals hold every frame as a full decoded image, so
+a blink plus a flicker would multiply the frame count.
+
+Then build it and look at the preview GIF:
+
+```bash
+uv run --with pillow python tools/animate.py build billie-<season> \
+  --preview /tmp/billie-anim
+open /tmp/billie-anim/billie-<season>.gif
+```
+
+For something none of the effects cover, draw full-size frames any way you
+like and package them with `animate.py pack`.
 
 ## Wire the season into the code
 
@@ -108,7 +157,9 @@ billie -s <season>      # eyeball it
   one. (This is why `backup` on Mar 31 and `aprilfools` on Apr 1 sit before
   `easter`.)
 - Kitty rendering derives the PNG name from the `.txt` name, so the two files
-  must share a stem (`billie-<season>`).
+  must share a stem (`billie-<season>`). The same goes for `.anim.json`.
+- If you re-edit a Billie's PNG, re-run `tools/animate.py build` for it. The
+  patches are cut from the old PNG and will no longer line up.
 - Half-block art is twice as tall in pixels as it is in character rows, so a
   ~60×34 `.txt` needs a terminal at least 34 rows tall; the CLI bows out with a
   polite complaint if the terminal is too small.

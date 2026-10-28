@@ -1,10 +1,11 @@
 """Tests for Kitty graphics protocol integration into core.py."""
 
+import re
 from io import StringIO
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from billie.core import Billie, TTYHandler
+from billie.core import ROOT, Billie, TTYHandler
 
 
 def _make_billie(*, no_billie=False, width=120, height=50, season="none"):
@@ -191,3 +192,68 @@ class TestPrintBillieNonKittyMode:
             b.print_billie()
         result = output.getvalue()
         assert "\033_G" not in result
+
+
+class TestAnimation:
+    """Seasons with an .anim.json get animated where the terminal can play it."""
+
+    @patch("billie.kitty.supports_animation", return_value=True)
+    @patch("billie.kitty.is_kitty_capable", return_value=True)
+    @patch("billie.core.Path.home")
+    def test_frames_loaded(self, mock_home, mock_capable, mock_anim, tmp_path):  # noqa: ARG002
+        mock_home.return_value = tmp_path
+        (tmp_path / "somefile").touch()
+        b = _make_billie(season="birthday")
+        b.setup()
+        assert b.anim_frames
+        assert b.anim_root_gap > 0
+        for data, _x, _y, gap in b.anim_frames:
+            assert data.startswith(b"\x89PNG")
+            assert gap > 0
+
+    @patch("billie.kitty.supports_animation", return_value=False)
+    @patch("billie.kitty.is_kitty_capable", return_value=True)
+    @patch("billie.core.Path.home")
+    def test_no_frames_without_support(
+        self,
+        mock_home,
+        mock_capable,  # noqa: ARG002
+        mock_anim,  # noqa: ARG002
+        tmp_path,
+    ):
+        mock_home.return_value = tmp_path
+        (tmp_path / "somefile").touch()
+        b = _make_billie(season="birthday")
+        b.setup()
+        assert b.anim_frames == []
+
+    def test_art_without_manifest_has_no_frames(self):
+        b = _make_billie()
+        b.load_animation(ROOT.joinpath("billie-does-not-exist.png"))
+        assert b.anim_frames == []
+
+    @patch("billie.kitty.supports_animation", return_value=True)
+    @patch("billie.kitty.is_kitty_capable", return_value=True)
+    @patch("billie.core.Path.home")
+    def test_output_animates_the_displayed_image(
+        self,
+        mock_home,
+        mock_capable,  # noqa: ARG002
+        mock_anim,  # noqa: ARG002
+        tmp_path,
+    ):
+        mock_home.return_value = tmp_path
+        (tmp_path / "somefile").touch()
+        b = _make_billie(season="birthday")
+        b.setup()
+
+        output = StringIO()
+        with patch("sys.stdout", output):
+            b.print_billie()
+        result = output.getvalue()
+
+        number = re.search(r"a=T[^;]*,I=(\d+)", result).group(1)
+        assert result.count("a=f,") == len(b.anim_frames)
+        assert f"I={number},s=3,v=1" in result
+        # Frames come after the image they animate.
+        assert result.index("a=T") < result.index("a=f")

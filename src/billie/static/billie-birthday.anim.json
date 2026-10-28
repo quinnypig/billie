@@ -1,0 +1,35 @@
+{
+  "root_gap": 160,
+  "frames": [
+    {
+      "file": "billie-birthday-anim1.png",
+      "x": 439,
+      "y": 452,
+      "gap": 110
+    },
+    {
+      "file": "billie-birthday-anim2.png",
+      "x": 439,
+      "y": 457,
+      "gap": 90
+    },
+    {
+      "file": "billie-birthday-anim3.png",
+      "x": 440,
+      "y": 450,
+      "gap": 130
+    },
+    {
+      "file": "billie-birthday-anim4.png",
+      "x": 438,
+      "y": 457,
+      "gap": 80
+    },
+    {
+      "file": "billie-birthday-anim5.png",
+      "x": 438,
+      "y": 453,
+      "gap": 120
+    }
+  ]
+}

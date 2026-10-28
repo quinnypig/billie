@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-towel-anim1.png",
+      "x": 361,
+      "y": 187,
+      "gap": 60
+    },
+    {
+      "file": "billie-towel-anim2.png",
+      "x": 361,
+      "y": 187,
+      "gap": 130
+    },
+    {
+      "file": "billie-towel-anim3.png",
+      "x": 361,
+      "y": 187,
+      "gap": 60
+    }
+  ]
+}

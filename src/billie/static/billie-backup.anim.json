@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-backup-anim1.png",
+      "x": 370,
+      "y": 175,
+      "gap": 60
+    },
+    {
+      "file": "billie-backup-anim2.png",
+      "x": 370,
+      "y": 175,
+      "gap": 130
+    },
+    {
+      "file": "billie-backup-anim3.png",
+      "x": 370,
+      "y": 175,
+      "gap": 60
+    }
+  ]
+}

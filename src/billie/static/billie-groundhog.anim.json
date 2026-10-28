@@ -1,0 +1,47 @@
+{
+  "root_gap": 1800,
+  "frames": [
+    {
+      "file": "billie-groundhog-anim1.png",
+      "x": 349,
+      "y": 191,
+      "gap": 60
+    },
+    {
+      "file": "billie-groundhog-anim2.png",
+      "x": 349,
+      "y": 191,
+      "gap": 130
+    },
+    {
+      "file": "billie-groundhog-anim3.png",
+      "x": 349,
+      "y": 191,
+      "gap": 60
+    },
+    {
+      "file": "billie-groundhog-anim4.png",
+      "x": 0,
+      "y": 0,
+      "gap": 1800
+    },
+    {
+      "file": "billie-groundhog-anim5.png",
+      "x": 498,
+      "y": 424,
+      "gap": 60
+    },
+    {
+      "file": "billie-groundhog-anim6.png",
+      "x": 498,
+      "y": 424,
+      "gap": 130
+    },
+    {
+      "file": "billie-groundhog-anim7.png",
+      "x": 498,
+      "y": 424,
+      "gap": 60
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 import argparse
 import contextlib
 import getpass
+import json
 import os
 import platform
 import random
@@ -39,6 +40,8 @@ class Billie:
         self.image_cols = 0
         self.image_rows = 0
         self.actual_width = 0
+        self.anim_frames = []
+        self.anim_root_gap = 0
 
     def setup_seasonal(self):
         """Load seasonal theme based on date or --season flag."""
@@ -64,27 +67,33 @@ class Billie:
 
         self.words = sayings.BillieDeque(*season["words"])
 
+    def setup_kitty(self):
+        """Use the high-res PNG via the Kitty graphics protocol, if we can."""
+        if self.ns.no_billie or not kitty.is_kitty_capable() or not self.tty.out_is_tty:
+            return
+        png_path = ROOT.joinpath(self.billie_path.name.replace(".txt", ".png"))
+        if not png_path.is_file():
+            return
+        self.image_data = png_path.read_bytes()
+        img_w, img_h = kitty.parse_png_dimensions(self.image_data)
+        self.image_cols, self.image_rows = kitty.calculate_cell_size(
+            img_w, img_h, self.tty.height, kitty.cell_aspect_ratio()
+        )
+        self.actual_width = self.tty.width
+        self.tty.width -= self.image_cols
+        if self.tty.width >= self.MIN_TEXT_WIDTH:
+            self.kitty_mode = True
+            if kitty.supports_animation():
+                self.load_animation(png_path)
+        else:
+            # Image too wide for terminal, fall back to ANSI
+            self.tty.width = self.actual_width
+            self.image_data = None
+
     def setup(self):
         """Load Billie, gather words, decorate terminal."""
         self.setup_seasonal()
-
-        # Kitty graphics protocol: render high-res PNG instead of ANSI art
-        if not self.ns.no_billie and kitty.is_kitty_capable() and self.tty.out_is_tty:
-            png_path = ROOT.joinpath(self.billie_path.name.replace(".txt", ".png"))
-            if png_path.is_file():
-                self.image_data = png_path.read_bytes()
-                img_w, img_h = kitty.parse_png_dimensions(self.image_data)
-                self.image_cols, self.image_rows = kitty.calculate_cell_size(
-                    img_w, img_h, self.tty.height
-                )
-                self.actual_width = self.tty.width
-                self.tty.width -= self.image_cols
-                if self.tty.width >= self.MIN_TEXT_WIDTH:
-                    self.kitty_mode = True
-                else:
-                    # Image too wide for terminal, fall back to ANSI
-                    self.tty.width = self.actual_width
-                    self.image_data = None
+        self.setup_kitty()
 
         if self.kitty_mode:
             billie = []
@@ -144,6 +153,18 @@ class Billie:
                 word = "*judges silently*"
 
             self.lines[target] = BillieMessage(self, line, word).generate()
+
+    def load_animation(self, png_path):
+        """Load animation frames for the PNG, if it has any (see tools/animate.py)."""
+        manifest = ROOT.joinpath(png_path.name.replace(".png", ".anim.json"))
+        if not manifest.is_file():
+            return
+        spec = json.loads(manifest.read_text(encoding="utf-8"))
+        self.anim_frames = [
+            (ROOT.joinpath(f["file"]).read_bytes(), f["x"], f["y"], f["gap"])
+            for f in spec["frames"]
+        ]
+        self.anim_root_gap = spec["root_gap"]
 
     def load_billie(self):
         """Load the platypus ASCII art."""
@@ -231,7 +252,12 @@ class Billie:
             img_row = total_lines - self.image_rows + 1
             img_col = self.actual_width - self.image_cols + 1
             sys.stdout.write(f"\033[{img_row};{img_col}H")
-            kitty.send_image(self.image_data, self.image_cols, self.image_rows)
+            # Animation frames find their image by number; a random one keeps
+            # clear of whatever numbers other programs on screen are using.
+            number = random.randint(1, 2**31 - 1) if self.anim_frames else None
+            kitty.send_image(self.image_data, self.image_cols, self.image_rows, number)
+            if self.anim_frames:
+                kitty.send_animation(number, self.anim_frames, self.anim_root_gap)
             sys.stdout.write(f"\033[{total_lines};1H")
 
         sys.stdout.flush()

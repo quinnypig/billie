@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-xmas-anim1.png",
+      "x": 343,
+      "y": 219,
+      "gap": 60
+    },
+    {
+      "file": "billie-xmas-anim2.png",
+      "x": 343,
+      "y": 219,
+      "gap": 130
+    },
+    {
+      "file": "billie-xmas-anim3.png",
+      "x": 343,
+      "y": 219,
+      "gap": 60
+    }
+  ]
+}

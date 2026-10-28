@@ -1,0 +1,47 @@
+{
+  "root_gap": 1800,
+  "frames": [
+    {
+      "file": "billie-pirate-anim1.png",
+      "x": 509,
+      "y": 213,
+      "gap": 60
+    },
+    {
+      "file": "billie-pirate-anim2.png",
+      "x": 509,
+      "y": 213,
+      "gap": 130
+    },
+    {
+      "file": "billie-pirate-anim3.png",
+      "x": 509,
+      "y": 213,
+      "gap": 60
+    },
+    {
+      "file": "billie-pirate-anim4.png",
+      "x": 0,
+      "y": 0,
+      "gap": 1800
+    },
+    {
+      "file": "billie-pirate-anim5.png",
+      "x": 677,
+      "y": 219,
+      "gap": 60
+    },
+    {
+      "file": "billie-pirate-anim6.png",
+      "x": 677,
+      "y": 219,
+      "gap": 130
+    },
+    {
+      "file": "billie-pirate-anim7.png",
+      "x": 677,
+      "y": 219,
+      "gap": 60
+    }
+  ]
+}

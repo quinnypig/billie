@@ -1,0 +1,23 @@
+{
+  "root_gap": 650,
+  "frames": [
+    {
+      "file": "billie-valentine-anim1.png",
+      "x": 45,
+      "y": 0,
+      "gap": 110
+    },
+    {
+      "file": "billie-valentine-anim2.png",
+      "x": 0,
+      "y": 0,
+      "gap": 110
+    },
+    {
+      "file": "billie-valentine-anim3.png",
+      "x": 47,
+      "y": 0,
+      "gap": 110
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-billing-anim1.png",
+      "x": 324,
+      "y": 76,
+      "gap": 60
+    },
+    {
+      "file": "billie-billing-anim2.png",
+      "x": 324,
+      "y": 76,
+      "gap": 130
+    },
+    {
+      "file": "billie-billing-anim3.png",
+      "x": 324,
+      "y": 76,
+      "gap": 60
+    }
+  ]
+}

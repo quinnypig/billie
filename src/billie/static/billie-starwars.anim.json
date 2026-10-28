@@ -1,0 +1,23 @@
+{
+  "root_gap": 100,
+  "frames": [
+    {
+      "file": "billie-starwars-anim1.png",
+      "x": 630,
+      "y": 0,
+      "gap": 80
+    },
+    {
+      "file": "billie-starwars-anim2.png",
+      "x": 651,
+      "y": 0,
+      "gap": 90
+    },
+    {
+      "file": "billie-starwars-anim3.png",
+      "x": 630,
+      "y": 0,
+      "gap": 70
+    }
+  ]
+}

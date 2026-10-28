@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-reinvent-anim1.png",
+      "x": 333,
+      "y": 102,
+      "gap": 60
+    },
+    {
+      "file": "billie-reinvent-anim2.png",
+      "x": 332,
+      "y": 102,
+      "gap": 130
+    },
+    {
+      "file": "billie-reinvent-anim3.png",
+      "x": 333,
+      "y": 102,
+      "gap": 60
+    }
+  ]
+}

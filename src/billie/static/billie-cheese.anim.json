@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-cheese-anim1.png",
+      "x": 354,
+      "y": 150,
+      "gap": 60
+    },
+    {
+      "file": "billie-cheese-anim2.png",
+      "x": 354,
+      "y": 150,
+      "gap": 130
+    },
+    {
+      "file": "billie-cheese-anim3.png",
+      "x": 354,
+      "y": 150,
+      "gap": 60
+    }
+  ]
+}

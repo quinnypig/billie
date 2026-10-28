@@ -1,0 +1,23 @@
+{
+  "root_gap": 3600,
+  "frames": [
+    {
+      "file": "billie-earth-anim1.png",
+      "x": 382,
+      "y": 124,
+      "gap": 60
+    },
+    {
+      "file": "billie-earth-anim2.png",
+      "x": 382,
+      "y": 124,
+      "gap": 130
+    },
+    {
+      "file": "billie-earth-anim3.png",
+      "x": 382,
+      "y": 124,
+      "gap": 60
+    }
+  ]
+}
